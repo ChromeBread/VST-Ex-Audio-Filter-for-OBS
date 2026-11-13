@@ -467,7 +467,8 @@ begin
     if (ExtractFileExt(N) = '.json') and (Length(N) = 36 + 5) and IsHex(Copy(N, 1, 36), True) then Result := 3; end
   else if Kind = 'presets' then begin if N = 'chain-presets.json' then Result := 3; end
   else if Kind = 'config' then begin
-    if (N = 'plugin-meta.json') or (N = 'plugin-cache.json') or (N = 'install-features.ini') then Result := 3; end
+    if (N = 'plugin-meta.json') or (N = 'plugin-cache.json') or (N = 'install-features.ini') or
+       (N = 'vst-ex.log') or (N = 'vst-ex.log.old') then Result := 3; end
   else if Kind = 'plugin' then begin if IsInstalledFile(N) then Result := 4; end;
 end;
 
@@ -477,7 +478,7 @@ var
   Roots, Kinds: TStringList;   { folder + what kind of files belong there }
   Strays: TStringList;         { files that are not ours (may be deleted, if the user ticks them) }
   KeptDirs: TStringList;       { folders that are not ours: never opened, never deleted }
-  ToDelete: TStringList;       { strays the user ticked }
+  ToDelete: TStringList;       { strays the user ticked, then our files of the ticked categories }
 
 procedure AddRoot(const Dir, Kind: String);
 begin
@@ -543,8 +544,8 @@ begin
   end;
 end;
 
-{ Deletes our files of the ticked categories in a root (its top level only; our files are never deeper). }
-procedure DeleteOurs(const Root, Kind: String);
+{ Queues our files of the ticked categories in a root (its top level only; our files are never deeper). }
+procedure QueueOurs(const Root, Kind: String);
 var
   Rec: TFindRec;
   Cat: Integer;
@@ -558,7 +559,7 @@ begin
         Continue;
       Cat := CategoryOf(Kind, Rec.Name);
       if ((Cat = 1) and DelThumbs) or ((Cat = 2) and DelShots) or ((Cat = 3) and DelSettings) then
-        DeleteFile(Root + '\' + Rec.Name);
+        ToDelete.Add(Root + '\' + Rec.Name);
     until not FindNext(Rec);
   finally
     FindClose(Rec);
@@ -789,6 +790,29 @@ begin
     AskWhatToDelete;
 end;
 
+{ Sends the files to the Recycle Bin, so a wrong tick can be undone. If PowerShell fails, the files stay where they are. }
+procedure RecycleFiles(Files: TStringList);
+var
+  Lines: TArrayOfString;
+  ListFile, Cmd: String;
+  I, Code: Integer;
+begin
+  if Files.Count = 0 then
+    Exit;
+  SetArrayLength(Lines, Files.Count);
+  for I := 0 to Files.Count - 1 do
+    Lines[I] := Files[I];
+  ListFile := ExpandConstant('{tmp}\recycle-list.txt');
+  if not SaveStringsToUTF8File(ListFile, Lines, False) then
+    Exit;
+  StringChangeEx(ListFile, '''', '''''', True);
+  Cmd := '-NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName Microsoft.VisualBasic; ' +
+    'Get-Content -LiteralPath ''' + ListFile + ''' -Encoding UTF8 | ForEach-Object { ' +
+    'if (Test-Path -LiteralPath $_ -PathType Leaf) { [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile($_, ''OnlyErrorDialogs'', ''SendToRecycleBin'') } }"';
+  if not Exec(ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'), Cmd, '', SW_HIDE, ewWaitUntilTerminated, Code) or (Code <> 0) then
+    Log('Recycle Bin move failed (code ' + IntToStr(Code) + '); the files were left in place');
+end;
+
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   I: Integer;
@@ -798,8 +822,7 @@ begin
   if ExportFirst and (DelThumbs or DelShots or DelSettings) then
     ExportAll;
   for I := 0 to Roots.Count - 1 do
-    DeleteOurs(RootDir(I), Kinds[I]);
-  for I := 0 to ToDelete.Count - 1 do
-    DeleteFile(ToDelete[I]);
+    QueueOurs(RootDir(I), Kinds[I]);
+  RecycleFiles(ToDelete);
   RemoveOurEmptyDirs;
 end;

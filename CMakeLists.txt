@@ -105,6 +105,8 @@ target_sources(
   ${CMAKE_PROJECT_NAME}
   PRIVATE
     src/plugin-main.cpp
+    src/log-file.cpp
+    src/log-file.h
     src/loader-api.h
     src/master-bus.cpp
     src/master-bus.h

@@ -325,13 +325,13 @@ QString PluginMeta::highResDir() const
 
 void PluginMeta::deleteThumbnails()
 {
-	QDir(screenshotDir()).removeRecursively();
+	QFile::moveToTrash(screenshotDir()); // Recycle Bin, so a mistaken click can be undone
 	emit changed();
 }
 
 void PluginMeta::deleteHighRes()
 {
-	QDir(highResDir()).removeRecursively();
+	QFile::moveToTrash(highResDir());
 	emit changed();
 }
 

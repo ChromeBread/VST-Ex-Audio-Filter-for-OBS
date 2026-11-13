@@ -29,6 +29,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "ui/tools-dialog.h"
 #include "ui/waveline-dock.h"
 #include "loader-api.h"
+#include "log-file.h"
 
 #include <obs-frontend-api.h>
 #include <obs-module.h>
@@ -49,6 +50,7 @@ static void onPluginEdited(void *, calldata_t *cd)
 
 bool obs_module_load(void)
 {
+	log_file_set_enabled(PluginMeta::instance().uiValue("logFile").toBool(false));
 	apply_saved_language();
 	register_pitch_filter();
 	register_stereo_filter();

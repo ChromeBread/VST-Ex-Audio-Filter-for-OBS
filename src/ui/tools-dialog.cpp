@@ -4,6 +4,7 @@
 #include "plugin-meta.h"
 #include "ui/backup.h"
 #include "loader-api.h"
+#include "log-file.h"
 #include "ui/cb-menu.h"
 #include "ui/chain-view.h"
 #include "ui/master-dock.h"
@@ -27,6 +28,13 @@
 #include <QHBoxLayout>
 #include <QDateTime>
 #include <QFileInfo>
+#include <QHash>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QSet>
+
+#include <algorithm>
 #include <QLabel>
 #include <QLineEdit>
 #include <QLocale>
@@ -36,6 +44,7 @@
 #include <QPushButton>
 #include <QSaveFile>
 #include <QScrollArea>
+#include <QStandardPaths>
 #include <QTabWidget>
 #include <QTimer>
 #include <QUrl>
@@ -128,17 +137,74 @@ static void openScriptsWindow()
 	}
 }
 
-static void cbHeading(int order, const char *key)
+// Returns the heading and its separator, so a heading whose items are all hidden can be hidden too.
+static QList<QAction *> cbHeading(int order, const char *key)
 {
 	QMenu *menu = cb_menu();
+	QList<QAction *> actions;
 	if (order > 100) {
 		auto *separator = new QAction(menu);
 		separator->setSeparator(true);
 		cb_menu_insert(separator, order - 1);
+		actions << separator;
 	}
 	auto *heading = new QAction(T(key), menu);
 	heading->setEnabled(false); // a label: QMenu::addSection draws no text in some themes
 	cb_menu_insert(heading, order);
+	actions << heading;
+	return actions;
+}
+
+// #cbOBScripts Lua scripts. A new script gets one line here: menu order (1xx = Scripts, 3xx = Custom Docks),
+// the name shown, and its .lua file name(s) - older names too, so an old install is still found.
+struct LuaScript {
+	int order;
+	const char *name;
+	QStringList files;
+};
+static const QList<LuaScript> &luaScripts()
+{
+	static const QList<LuaScript> list = {
+		{110, "Audio Device Restorer", {"audio_device_restorer.lua"}},
+		{120, "Font Bridge", {"obs_font_bridge.lua", "fontbridge_text.lua"}},
+		{310, "Image Resize Reader", {"obs_image_resize_reader.lua"}},
+		{320, "Source Resizer", {"obs_source_resizer.lua"}},
+	};
+	return list;
+}
+
+// File names (lower case) of the scripts added in Tools > Scripts of any scene collection whose file still exists.
+// Lua scripts have no menu API, so the saved scene collections are the only place that says which are installed.
+// shortcut: a script added in this session shows up once OBS has saved the scene collection (scene change,
+// exit, ...), which is good enough for a menu; upgrade to a signal from each script if that ever matters.
+static QSet<QString> registeredLuaScripts()
+{
+	struct Cached {
+		QDateTime modified;
+		QSet<QString> files;
+	};
+	static QHash<QString, Cached> cache; // parsed once per file version: collections can be several MB
+	QDir scenes(QDir(configDir()).absoluteFilePath("../../basic/scenes")); // works in portable mode too
+	QSet<QString> found;
+	for (const QFileInfo &info : scenes.entryInfoList({"*.json"}, QDir::Files)) {
+		Cached &entry = cache[info.absoluteFilePath()];
+		if (entry.modified != info.lastModified()) {
+			entry.modified = info.lastModified();
+			entry.files.clear();
+			QFile f(info.absoluteFilePath());
+			if (f.open(QIODevice::ReadOnly)) {
+				const QJsonArray scripts =
+					QJsonDocument::fromJson(f.readAll()).object()["modules"].toObject()["scripts-tool"].toArray();
+				for (const QJsonValue &s : scripts) {
+					QString path = s.toObject()["path"].toString();
+					if (!path.isEmpty() && QFileInfo::exists(path))
+						entry.files.insert(QFileInfo(path).fileName().toLower());
+				}
+			}
+		}
+		found.unite(entry.files);
+	}
+	return found;
 }
 
 void install_tools_menu()
@@ -150,9 +216,30 @@ void install_tools_menu()
 	bool waveline = meta.uiValue("featureWaveline").toBool(true);
 
 	// Lua scripts have no API for menu items, so these lead to the Scripts window where each one is managed.
-	cbHeading(100, "CbMenu.Scripts");
-	cb_menu_add(110, "Audio Device Restorer", [] { openScriptsWindow(); });
-	cb_menu_add(120, "Font Bridge", [] { openScriptsWindow(); });
+	// Only the installed ones are shown, checked again each time the menu opens.
+	QList<QAction *> scriptsHeading = cbHeading(100, "CbMenu.Scripts");
+	QList<QAction *> customDocksHeading = cbHeading(300, "CbMenu.CustomDocks");
+	QList<QPair<QAction *, QStringList>> luaActions;
+	for (const LuaScript &s : luaScripts()) {
+		auto *action = new QAction(QString::fromUtf8(s.name), cb_menu());
+		QObject::connect(action, &QAction::triggered, action, [] { openScriptsWindow(); });
+		cb_menu_insert(action, s.order);
+		luaActions.append({action, s.files});
+	}
+	QObject::connect(cb_menu(), &QMenu::aboutToShow, cb_menu(), [=] {
+		QSet<QString> installed = registeredLuaScripts();
+		bool anyScripts = false, anyCustomDocks = false;
+		for (const auto &[action, files] : luaActions) {
+			bool on = std::any_of(files.begin(), files.end(), [&](const QString &f) { return installed.contains(f); });
+			action->setVisible(on);
+			bool customDock = action->property("cbOrder").toInt() >= 300;
+			(customDock ? anyCustomDocks : anyScripts) |= on;
+		}
+		for (QAction *a : scriptsHeading)
+			a->setVisible(anyScripts);
+		for (QAction *a : customDocksHeading)
+			a->setVisible(anyCustomDocks);
+	});
 
 	if (mixer || switcher || waveline || masterbus::unlocked())
 		cbHeading(200, "CbMenu.Docks");
@@ -164,10 +251,6 @@ void install_tools_menu()
 		cb_menu_add(230, "VST Ex WaveLine", [] { showDock("vst-ex-waveline-dock"); });
 	if (masterbus::unlocked())
 		cb_menu_add(240, "VST Ex Master", [] { showDock("vst-ex-master-dock"); });
-
-	cbHeading(300, "CbMenu.CustomDocks");
-	cb_menu_add(310, "Image Resize Reader", [] { openScriptsWindow(); });
-	cb_menu_add(320, "Source Resizer", [] { openScriptsWindow(); });
 
 	cbHeading(400, "CbMenu.Filters");
 	cb_menu_add(410, "VST Ex Audio Filter", [] { ToolsDialog::open(); });
@@ -398,6 +481,48 @@ QWidget *ToolsDialog::buildDebugSection()
 	backupLayout->addLayout(backupButtons);
 	backupLayout->addStretch(1);
 	tabs->addTab(backup, T("Backup"));
+
+	// Log: off by default; written only on this PC, for when the user asks the developer for help
+	auto *logPage = new QWidget(box);
+	auto *logLayout = new QVBoxLayout(logPage);
+	auto *logOn = new QCheckBox(T("Log.Enable"), logPage);
+	logOn->setChecked(log_file_enabled());
+	auto *logExport = new QPushButton(T("Log.Export"), logPage);
+	auto refreshLog = [logExport] {
+		logExport->setEnabled(QFile::exists(log_file_path()) || QFile::exists(log_file_path() + ".old"));
+	};
+	connect(logOn, &QCheckBox::toggled, this, [refreshLog](bool on) {
+		PluginMeta::instance().setUiValue("logFile", on);
+		log_file_set_enabled(on);
+		obs_log(LOG_INFO, on ? "log file on (version %s)" : "log file off (version %s)", PLUGIN_VERSION);
+		refreshLog();
+	});
+	connect(logExport, &QPushButton::clicked, this, [this] {
+		QString start = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation) + "/vst-ex-log.txt";
+		QString path = QFileDialog::getSaveFileName(this, T("Log.Export"), start, "Text (*.txt)");
+		if (path.isEmpty())
+			return; // the file dialog itself asks before overwriting
+		QByteArray text;
+		for (const QString &part : {log_file_path() + ".old", log_file_path()}) {
+			QFile f(part);
+			if (f.open(QIODevice::ReadOnly))
+				text += f.readAll();
+		}
+		QSaveFile out(path);
+		if (out.open(QIODevice::WriteOnly) && out.write(text) == text.size() && out.commit())
+			QMessageBox::information(this, T("Log.Export"), T("Log.Exported").arg(native(path)));
+		else
+			QMessageBox::warning(this, T("Log.Export"), T("Log.ExportFailed").arg(native(path)));
+	});
+	auto *logButtons = new QHBoxLayout();
+	logButtons->addWidget(logExport);
+	logButtons->addStretch(1);
+	logLayout->addWidget(selectable(T("Log.Text")));
+	logLayout->addWidget(logOn);
+	logLayout->addLayout(logButtons);
+	logLayout->addStretch(1);
+	refreshLog();
+	tabs->addTab(logPage, T("Log"));
 
 	// VST Ex Master: experimental, so nothing of it exists in OBS until the user accepts what is written here
 	auto *master = new QWidget(box);

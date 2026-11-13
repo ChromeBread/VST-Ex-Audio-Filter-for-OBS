@@ -59,7 +59,7 @@ Pour désinstaller avec une sauvegarde, lancez `OBS-VST-Ex-Audio-Filter\Safe_Uni
 - *VST Ex Transposition / Pan* : hauteur en demi-tons et panoramique, pratique pour distinguer les appareils
 - *VST Ex Pseudo-stéréo* : élargit un micro mono sans DAW (effet Haas), un seul filtre à ajouter ou retirer
 
-- Outils > #cbOBScripts > VST Ex Audio Filter : langue (EN / JP / KR / ID / FR / TW), version, parties facultatives, infos de débogage, export / import de tous les réglages (mode débogage)
+- Outils > #cbOBScripts > VST Ex Audio Filter : langue (EN / JP / KR / ID / FR / TW), version, parties facultatives, **Mode débogage**
 
 ## VST Enigmax Loader
 
@@ -67,7 +67,6 @@ Pour désinstaller avec une sauvegarde, lancez `OBS-VST-Ex-Audio-Filter\Safe_Uni
 - Navigateur en liste / miniatures / détails, tri, recherche, favoris, marques HID (masquer), notes, récemment utilisés
 - Miniatures prises automatiquement à la première ouverture d’un éditeur, ou toutes d’un coup ; captures par filtre
 - Exporter / importer les réglages d’un plugin depuis la fenêtre de l’éditeur
-- **Transfert** (Outils > #cbOBScripts > VST Enigmax Loader > Mode débogage) : déplace les filtres VST2 sur place, avec leurs réglages, vers et depuis le filtre *VST 2.x Plug-in* d'OBS.
 - Miniatures et captures haute résolution sont rangées dans des dossiers séparés
 - Les copies d'un plugin dans des dossiers différents sont des entrées séparées, comme dans OBS : favoris, HID, notes et miniatures se règlent une par une
 

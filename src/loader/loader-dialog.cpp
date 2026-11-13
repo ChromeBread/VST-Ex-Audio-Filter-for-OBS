@@ -175,7 +175,8 @@ QWidget *LoaderDialog::buildShotsPage(const QString &dir, const char *countKey, 
 		QDesktopServices::openUrl(QUrl::fromLocalFile(dir));
 	});
 	connect(remove, &QPushButton::clicked, this, [this, size, highRes] {
-		if (QMessageBox::question(this, windowTitle(), T("Loader.Delete.Confirm").arg(size)) != QMessageBox::Yes)
+		if (QMessageBox::question(this, windowTitle(), T("Loader.Delete.Confirm").arg(size),
+					  QMessageBox::Yes | QMessageBox::No, QMessageBox::No) != QMessageBox::Yes)
 			return;
 		if (highRes)
 			PluginMeta::instance().deleteHighRes();

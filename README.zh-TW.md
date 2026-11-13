@@ -56,7 +56,7 @@ VST 濾鏡屬於 VST Enigmax Loader，移除它後 OBS 就無法載入這些濾�
 -「VST Ex 移調 / 聲像」: 以半音為單位的音高與聲像，對齊裝置時容易分辨
 -「VST Ex 假立體聲」: 不用 DAW 就能讓單聲道麥克風變寬 (哈斯效應)，一個濾鏡即可新增或移除
 
-- 工具 > #cbOBScripts > VST Ex Audio Filter: 語言 (EN / JP / KR / ID / FR / TW)、版本、選用部分開關、除錯資訊、 匯出 / 匯入所有設定 (除錯模式)
+- 工具 > #cbOBScripts > VST Ex Audio Filter: 語言 (EN / JP / KR / ID / FR / TW)、版本、選用部分開關、**偵錯模式**
 
 ## VST Enigmax Loader
 
@@ -64,7 +64,6 @@ VST 濾鏡屬於 VST Enigmax Loader，移除它後 OBS 就無法載入這些濾�
 - 清單 / 縮圖 / 詳細檢視的瀏覽器，排序、搜尋、我的最愛、HID (隱藏) 標記、備註、最近使用
 - 第一次開啟編輯器時自動擷取縮圖，也可一次全部產生；每個濾鏡的個別截圖
 - 在編輯器視窗匯出 / 匯入外掛設定
-- **移交** (工具 > #cbOBScripts > VST Enigmax Loader > 除錯模式): 將 VST2 濾鏡連同設定原地移到 OBS 內建「VST 2.x 外掛」濾鏡，也可反向移回
 - 縮圖與高解析度截圖分開存放在不同資料夾
 - 不同資料夾中的相同外掛與 OBS 一樣視為不同項目，我的最愛、HID、備註與縮圖可逐一設定
 

@@ -59,7 +59,7 @@ Untuk menghapus sekaligus mencadangkan, jalankan `OBS-VST-Ex-Audio-Filter\Safe_U
 - *VST Ex Pitch / Pan*: pitch per semitone dan pan, memudahkan membedakan perangkat saat menyelaraskan
 - *VST Ex Pseudo Stereo*: melebarkan mik mono tanpa DAW (efek Haas), satu filter untuk ditambah atau dihapus
 
-- Alat > #cbOBScripts > VST Ex Audio Filter: bahasa (EN / JP / KR / ID / FR / TW), versi, bagian opsional, info debug, ekspor / impor semua pengaturan (mode debug)
+- Alat > #cbOBScripts > VST Ex Audio Filter: bahasa (EN / JP / KR / ID / FR / TW), versi, bagian opsional, **Mode debug**
 
 ## VST Enigmax Loader
 
@@ -67,7 +67,6 @@ Untuk menghapus sekaligus mencadangkan, jalankan `OBS-VST-Ex-Audio-Filter\Safe_U
 - Penjelajah dengan tampilan daftar / gambar mini / detail, urutkan, cari, favorit, tanda HID (sembunyi), catatan, terakhir dipakai
 - Gambar mini otomatis saat editor pertama kali dibuka, atau sekaligus; tangkapan layar per filter
 - Ekspor / impor pengaturan plugin dari jendela editor
-- **Serah terima** (Alat > #cbOBScripts > VST Enigmax Loader > Mode debug): memindahkan filter VST2 di tempat, beserta pengaturannya, ke dan dari filter *VST 2.x Plug-in* bawaan OBS.
 - Thumbnail dan tangkapan layar resolusi tinggi disimpan di folder terpisah
 - Salinan plugin di folder berbeda adalah entri terpisah, seperti di OBS: favorit, HID, catatan, dan gambar mini diatur satu per satu
 

@@ -4,6 +4,7 @@
 
 #include <obs-frontend-api.h>
 #include <obs-module.h>
+#include <plugin-support.h>
 #include <obs.hpp>
 #include <util/config-file.h>
 
@@ -86,14 +87,14 @@ void swapIn()
 	obs_encoder_t *encoder = output ? obs_output_get_audio_encoder(output, 0) : nullptr;
 	if (!encoder || !connected || !virtualTrack.audio() || obs_encoder_active(encoder)) {
 		failed = true; // e.g. Enhanced Broadcasting, or the encoder shared with a recording already running
-		blog(LOG_WARNING, "[VST Ex] the stream can't go through the master, it uses the normal sound");
+		obs_log(LOG_WARNING, "the stream can't go through the master, it uses the normal sound");
 		return;
 	}
 	obs_encoder_set_audio(encoder, virtualTrack.audio());
 	failed = obs_encoder_audio(encoder) != virtualTrack.audio();
 	if (!failed)
 		swapped = encoder;
-	blog(LOG_INFO, "[VST Ex] stream start: master %s", failed ? "not applied" : "applied");
+	obs_log(LOG_INFO, "stream start: master %s", failed ? "not applied" : "applied");
 }
 
 void swapOut()
@@ -102,7 +103,7 @@ void swapOut()
 		return;
 	obs_encoder_set_audio(swapped, obs_get_audio());
 	swapped = nullptr;
-	blog(LOG_INFO, "[VST Ex] stream stopped: encoder back on the normal sound");
+	obs_log(LOG_INFO, "stream stopped: encoder back on the normal sound");
 	if (!current.enabled)
 		detach();
 }

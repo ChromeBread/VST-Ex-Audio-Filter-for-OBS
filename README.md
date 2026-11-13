@@ -59,7 +59,7 @@ To uninstall with a backup, run `OBS-VST-Ex-Audio-Filter\Safe_Uninstaller\Safe_U
 - *VST Ex Pitch / Pan*: pitch in semitones and pan, handy to tell devices apart when aligning them
 - *VST Ex Pseudo Stereo*: widens a mono mic without a DAW (Haas effect), one filter to add or remove
 
-- Tools > #cbOBScripts > VST Ex Audio Filter: language (EN / JP / KR / ID / FR / TW), version, optional parts, debug information, export / import of all settings (debug mode)
+- Tools > #cbOBScripts > VST Ex Audio Filter: language (EN / JP / KR / ID / FR / TW), version, optional parts, **Debug mode**
 
 ## VST Enigmax Loader
 
@@ -67,7 +67,6 @@ To uninstall with a backup, run `OBS-VST-Ex-Audio-Filter\Safe_Uninstaller\Safe_U
 - Browser with list / thumbnails / details view, sort, search, favorites, HID (hide) marks, notes, recently used
 - Thumbnails taken automatically the first time an editor opens, or all at once; per-filter screenshots
 - Export / import plugin settings from the editor window
-- **Hand over** (Tools > #cbOBScripts > VST Enigmax Loader > Debug mode): moves VST2 filters in place, with their settings, to and from OBS's own *VST 2.x Plug-in* filter.
 - Thumbnails and high-resolution screenshots are kept in separate folders
 - Copies of a plugin in different folders are separate entries, as in OBS: favorites, HID, notes and thumbnails are set one by one
 
