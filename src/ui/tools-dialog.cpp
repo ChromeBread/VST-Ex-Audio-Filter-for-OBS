@@ -42,6 +42,7 @@
 #include <QPlainTextEdit>
 #include <QPointer>
 #include <QPushButton>
+#include <QRegularExpression>
 #include <QSaveFile>
 #include <QScrollArea>
 #include <QStandardPaths>
@@ -155,8 +156,9 @@ static QList<QAction *> cbHeading(int order, const char *key)
 	return actions;
 }
 
-// #cbOBScripts Lua scripts. A new script gets one line here: menu order (1xx = Scripts, 3xx = Custom Docks),
-// the name shown, and its .lua file name(s) - older names too, so an old install is still found.
+// #cbOBScripts Lua scripts released before scripts named themselves (see readLuaTag): menu order (1xx = Scripts,
+// 3xx = Custom Docks), the name shown, and its .lua file name(s) - older names too, so an old install is still found.
+// Kept for old versions of these scripts that have no tag line. A new script needs no line here.
 struct LuaScript {
 	int order;
 	const char *name;
@@ -169,23 +171,56 @@ static const QList<LuaScript> &luaScripts()
 		{120, "Font Bridge", {"obs_font_bridge.lua", "fontbridge_text.lua"}},
 		{310, "Image Resize Reader", {"obs_image_resize_reader.lua"}},
 		{320, "Source Resizer", {"obs_source_resizer.lua"}},
+		{330, "Multistream Discord Notify", {"obs_multistream_discord.lua"}},
+		{340, "YT Buffering Checker", {"obs_yt_buffering_checker.lua"}},
 	};
 	return list;
 }
 
-// File names (lower case) of the scripts added in Tools > Scripts of any scene collection whose file still exists.
-// Lua scripts have no menu API, so the saved scene collections are the only place that says which are installed.
+// A script not in luaScripts() names itself in its first lines, so releasing it needs no plugin update:
+//   -- cbOBScripts: order=350 name="New Script Name"
+// order 101-199 = Scripts, 301-399 = Custom Docks. Returns order 0 when the file has no valid tag.
+struct LuaTag {
+	int order = 0;
+	QString name;
+};
+static LuaTag readLuaTag(const QString &path)
+{
+	QFile f(path);
+	if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+		return {};
+	static const QRegularExpression re(
+		R"re(^--\s*cbOBScripts:\s*order\s*=\s*(\d{3})\s+name\s*=\s*"([^"]{1,64})"$)re");
+	for (int i = 0; i < 20 && !f.atEnd(); i++) {
+		QString line = QString::fromUtf8(f.readLine()).trimmed();
+		if (line.startsWith(QChar(0xFEFF)))
+			line.remove(0, 1);
+		QRegularExpressionMatch m = re.match(line);
+		if (!m.hasMatch())
+			continue;
+		int order = m.captured(1).toInt();
+		QString name = m.captured(2).trimmed();
+		if (name.isEmpty() || !((order > 100 && order < 200) || (order > 300 && order < 400)))
+			return {}; // headings and the Docks / Filters sections stay the plugin's own
+		return {order, name};
+	}
+	return {};
+}
+
+// File names (lower case) -> paths of the scripts added in Tools > Scripts of any scene collection whose file
+// still exists. Lua scripts have no menu API, so the saved scene collections are the only place that says which
+// are installed.
 // shortcut: a script added in this session shows up once OBS has saved the scene collection (scene change,
 // exit, ...), which is good enough for a menu; upgrade to a signal from each script if that ever matters.
-static QSet<QString> registeredLuaScripts()
+static QHash<QString, QString> registeredLuaScripts()
 {
 	struct Cached {
 		QDateTime modified;
-		QSet<QString> files;
+		QHash<QString, QString> files;
 	};
 	static QHash<QString, Cached> cache; // parsed once per file version: collections can be several MB
 	QDir scenes(QDir(configDir()).absoluteFilePath("../../basic/scenes")); // works in portable mode too
-	QSet<QString> found;
+	QHash<QString, QString> found;
 	for (const QFileInfo &info : scenes.entryInfoList({"*.json"}, QDir::Files)) {
 		Cached &entry = cache[info.absoluteFilePath()];
 		if (entry.modified != info.lastModified()) {
@@ -198,11 +233,11 @@ static QSet<QString> registeredLuaScripts()
 				for (const QJsonValue &s : scripts) {
 					QString path = s.toObject()["path"].toString();
 					if (!path.isEmpty() && QFileInfo::exists(path))
-						entry.files.insert(QFileInfo(path).fileName().toLower());
+						entry.files.insert(QFileInfo(path).fileName().toLower(), path);
 				}
 			}
 		}
-		found.unite(entry.files);
+		found.insert(entry.files);
 	}
 	return found;
 }
@@ -220,20 +255,50 @@ void install_tools_menu()
 	QList<QAction *> scriptsHeading = cbHeading(100, "CbMenu.Scripts");
 	QList<QAction *> customDocksHeading = cbHeading(300, "CbMenu.CustomDocks");
 	QList<QPair<QAction *, QStringList>> luaActions;
+	QSet<QString> listedFiles;
 	for (const LuaScript &s : luaScripts()) {
 		auto *action = new QAction(QString::fromUtf8(s.name), cb_menu());
 		QObject::connect(action, &QAction::triggered, action, [] { openScriptsWindow(); });
 		cb_menu_insert(action, s.order);
 		luaActions.append({action, s.files});
+		for (const QString &f : s.files)
+			listedFiles.insert(f);
 	}
 	QObject::connect(cb_menu(), &QMenu::aboutToShow, cb_menu(), [=] {
-		QSet<QString> installed = registeredLuaScripts();
+		QHash<QString, QString> installed = registeredLuaScripts();
 		bool anyScripts = false, anyCustomDocks = false;
 		for (const auto &[action, files] : luaActions) {
 			bool on = std::any_of(files.begin(), files.end(), [&](const QString &f) { return installed.contains(f); });
 			action->setVisible(on);
 			bool customDock = action->property("cbOrder").toInt() >= 300;
 			(customDock ? anyCustomDocks : anyScripts) |= on;
+		}
+
+		// Scripts that name themselves (readLuaTag). The list above wins, so an old name keeps its place.
+		static QHash<QString, QAction *> tagged; // file name (lower case) -> its menu item
+		for (QAction *a : tagged)
+			a->setVisible(false);
+		for (auto it = installed.cbegin(); it != installed.cend(); ++it) {
+			if (listedFiles.contains(it.key()))
+				continue;
+			LuaTag tag = readLuaTag(it.value());
+			QAction *action = tagged.value(it.key());
+			if (action && action->property("cbOrder").toInt() != tag.order) {
+				delete action; // tag removed or order changed: insert again at the new place
+				tagged.remove(it.key());
+				action = nullptr;
+			}
+			if (!tag.order)
+				continue;
+			if (!action) {
+				action = new QAction(cb_menu());
+				QObject::connect(action, &QAction::triggered, action, [] { openScriptsWindow(); });
+				cb_menu_insert(action, tag.order);
+				tagged.insert(it.key(), action);
+			}
+			action->setText(tag.name);
+			action->setVisible(true);
+			(tag.order >= 300 ? anyCustomDocks : anyScripts) = true;
 		}
 		for (QAction *a : scriptsHeading)
 			a->setVisible(anyScripts);
