@@ -19,7 +19,7 @@ les filtres VST2 vers le filtre VST 2.x d'OBS avec *Transfert* (voir plus bas).
 2. Quittez OBS et lancez-le. *Installation complète* installe tout ; *Installation personnalisée* permet de choisir :
    - VST Ex Audio Filter (requis) : *Filtres (VST Ex)*, filtres hauteur / pseudo-stéréo, Outils > #cbOBScripts > VST Ex Audio Filter
    - VST Enigmax Loader : plugins VST2 / VST3
-   - VST Ex Chain View, dock VST Ex Mixer, dock VST Ex Switcher
+   - VST Ex Chain View, dock VST Ex Mixer, dock VST Ex Switcher, dock VST Ex WaveLine
 
    Les parties facultatives de VST Ex s'activent ou se désactivent ensuite dans Outils > #cbOBScripts > VST Ex Audio Filter (après redémarrage d'OBS).
 3. Lancez OBS. Au premier démarrage, il demande où garder miniatures, captures et historique.
@@ -99,9 +99,31 @@ Pour désinstaller avec une sauvegarde, lancez `OBS-VST-Ex-Audio-Filter\Safe_Uni
 
 ## VST Ex WaveLine
 
-- Les formes d'onde des sources choisies défilent superposées
-- Barre de gauche : zoom (2 à 60 secondes affichées). Boutons Tr à droite : les sources des pistes allumées qui vont au stream sont foncées, les autres pâles. Les boutons ne changent que l'affichage, pas le routage
-- `●` : points de battement au BPM choisi (120 par défaut) ; appuyez sur un temps pour les aligner. `≡` : ordre des calques et opacité de chaque source
+- Les formes d'onde des sources choisies défilent superposées ; `≡` passe de la forme d'onde normale à la stéréo (L en haut, R en bas)
+- De gauche à droite : boutons Tr, barre de zoom (2 à 60 secondes affichées), forme d'onde. Les sources des pistes allumées qui vont au stream sont foncées, les autres pâles (affichage seulement, le routage ne change pas)
+- Faites glisser le bord gauche ou droit de la forme d'onde pour la rétrécir ou l'élargir ; les deux côtés bougent ensemble
+- À droite, le temps : un chiffre dans un cercle qui fait un tour tous les 16 temps, et une barre 4x2 qui fait un tour tous les 8 temps. La ligne du haut suit le BPM choisi (120 par défaut). `●` l'allume / l'éteint, `↺` (ou le raccourci « VST Ex WaveLine : réinitialiser le temps ») fait de maintenant le temps 1
+- `≡` : ordre des calques et opacité de chaque source, et style de forme d'onde
+
+### Lien VirtualDJ
+
+Activez « Lien VirtualDJ dans VST Ex WaveLine » dans Outils > #cbOBScripts > VST Ex Audio Filter (tant qu'il est désactivé, rien n'en est affiché et rien n'attend de connexion). VirtualDJ se connecte en OS2L ; le plugin l'attend sur ce PC uniquement (127.0.0.1).
+
+- Ligne de temps du bas : suit le temps et le BPM de VirtualDJ
+- Avec « Afficher le tag VirtualDJ des 4 platines » activé, le tag du morceau de chaque platine (Commentaire par défaut) s'affiche sous les noms des sources, la platine maître marquée d'un ▶. Cliquez sur la ligne pour parcourir les tags choisis
+- Préparation : bouton VDJ de WaveLine > Préparer VirtualDJ. Il guide dans l'ordre : réglages de VirtualDJ, nombre de platines et tags à afficher, et scripts à coller dans des boutons personnalisés de VirtualDJ (un par platine). Appuyez une fois sur chaque bouton à chaque démarrage de VirtualDJ (appuyez de nouveau pour l'arrêter)
+- VirtualDJ n'envoie qu'environ 10 valeurs par seconde, donc plus il y a de platines et de tags, plus l'affichage se met à jour lentement (toutes les quelques secondes). Ce qui a été reçu reste affiché
+
+![VST Ex WaveLine avec le lien VirtualDJ (BPM des 4 platines, platine maître marquée ▶)](docs/images/preview-waveline.png)
+*VST Ex WaveLine avec le lien VirtualDJ (BPM des 4 platines, platine maître marquée ▶)*
+
+## VST Ex Key Wheel
+
+- Dock affiché avec « Afficher le dock VST Ex Key Wheel » (disponible une fois le lien VirtualDJ activé) : la tonalité de la platine maître de VirtualDJ sur le cycle des quintes (Camelot), qui tourne pour placer la tonalité jouée en haut. Les tonalités qui se mixent bien (voisines et relative) sont aussi éclairées
+- La tonalité vient du script du bouton 1 créé dans Préparer VirtualDJ
+
+![VST Ex Key Wheel](docs/images/preview-keywheel.png)
+*VST Ex Key Wheel*
 
 ## Compilation
 

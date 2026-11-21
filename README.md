@@ -19,7 +19,7 @@ to OBS's own VST 2.x filter first with *Hand over* (see below).
 2. Quit OBS and run it. *Full installation* installs everything; *Custom installation* lets you choose:
    - VST Ex Audio Filter (required): *Filters (VST Ex)*, pitch / pseudo-stereo filters, Tools > #cbOBScripts > VST Ex Audio Filter
    - VST Enigmax Loader: VST2 / VST3 plugins
-   - VST Ex Chain View, VST Ex Mixer dock, VST Ex Switcher dock
+   - VST Ex Chain View, VST Ex Mixer dock, VST Ex Switcher dock, VST Ex WaveLine dock
 
    The optional VST Ex parts can be switched on or off later in Tools > #cbOBScripts > VST Ex Audio Filter (applies after an OBS restart).
 3. Start OBS. On first start it asks where to keep thumbnails, screenshots and history.
@@ -99,9 +99,31 @@ To uninstall with a backup, run `OBS-VST-Ex-Audio-Filter\Safe_Uninstaller\Safe_U
 
 ## VST Ex WaveLine
 
-- Waveforms of the sources you choose, flowing on top of each other
-- Bar on the left: zoom (2 to 60 seconds shown). Tr buttons on the right: sources on the lit tracks that reach the stream are strong, the others faint. The buttons only change the display, not the routing
-- `●`: beat dots at the BPM you set (default 120); press it on a beat to line them up. `≡`: layer order and opacity of each source
+- Waveforms of the sources you choose, flowing on top of each other; `≡` switches between the normal waveform and stereo (L up, R down)
+- From the left: Tr buttons, the zoom bar (2 to 60 seconds shown), the waveform. Sources on the lit tracks that reach the stream are strong, the others faint (display only, the routing is not changed)
+- Drag the left or right edge of the waveform to make it narrower or wider; both sides move together
+- On the right, the beat: a number in a circle going round once every 16 beats, and a 4x2 bar going round once every 8 beats. The upper row runs at the BPM you set (default 120). `●` switches it on / off, `↺` (or the hotkey "VST Ex WaveLine: reset beat") makes now beat 1
+- `≡`: layer order and opacity of each source, and the waveform style
+
+### VirtualDJ link
+
+Switch on "VirtualDJ link in VST Ex WaveLine" in Tools > #cbOBScripts > VST Ex Audio Filter (while it is off, nothing of it is shown and nothing listens). VirtualDJ connects over OS2L; the plugin waits for it on this PC only (127.0.0.1).
+
+- Lower beat row: runs on VirtualDJ's beat and BPM
+- With "Show the VirtualDJ tag of the 4 decks" on, the tag of each deck's song (Comment by default) is shown under the source names, the master deck marked with ▶. Click the line to go through the chosen tags
+- Setting up: VDJ button in WaveLine > Set up VirtualDJ. It walks you through VirtualDJ's settings, the number of decks and the tags to show, and the scripts to paste into VirtualDJ custom buttons (one per deck), in that order. Press each button once every time you start VirtualDJ (press again to stop)
+- VirtualDJ sends only about 10 values a second, so the more decks and tags, the slower the display updates (every few seconds). What was received stays shown
+
+![VST Ex WaveLine with the VirtualDJ link (BPM of the 4 decks, master deck marked)](docs/images/preview-waveline.png)
+*VST Ex WaveLine with the VirtualDJ link (BPM of the 4 decks, master deck marked)*
+
+## VST Ex Key Wheel
+
+- Dock shown with "Show the VST Ex Key Wheel dock" (available once the VirtualDJ link is on): the key of VirtualDJ's master deck on the circle of fifths (Camelot), turning so the playing key is at the top. Keys that mix well (the neighbours and the relative key) are lit too
+- The key comes from the button 1 script made in Set up VirtualDJ
+
+![VST Ex Key Wheel](docs/images/preview-keywheel.png)
+*VST Ex Key Wheel*
 
 ## Build
 

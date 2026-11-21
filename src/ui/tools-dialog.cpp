@@ -7,6 +7,7 @@
 #include "log-file.h"
 #include "ui/cb-menu.h"
 #include "ui/chain-view.h"
+#include "ui/key-wheel-dock.h"
 #include "ui/master-dock.h"
 #include "ui/ui-text.h"
 
@@ -306,8 +307,17 @@ void install_tools_menu()
 			a->setVisible(anyCustomDocks);
 	});
 
-	if (mixer || switcher || waveline || masterbus::unlocked())
-		cbHeading(200, "CbMenu.Docks");
+	// The Key Wheel can be switched on and off while OBS runs, so it and the heading are checked when the menu opens.
+	QList<QAction *> docksHeading = cbHeading(200, "CbMenu.Docks");
+	bool fixedDocks = mixer || switcher || waveline || masterbus::unlocked();
+	auto *keyWheel = new QAction(QStringLiteral("VST Ex Key Wheel"), cb_menu());
+	QObject::connect(keyWheel, &QAction::triggered, keyWheel, [] { showDock("vst-ex-key-wheel-dock"); });
+	cb_menu_insert(keyWheel, 250);
+	QObject::connect(cb_menu(), &QMenu::aboutToShow, cb_menu(), [=] {
+		keyWheel->setVisible(key_wheel_enabled());
+		for (QAction *a : docksHeading)
+			a->setVisible(fixedDocks || key_wheel_enabled());
+	});
 	if (mixer)
 		cb_menu_add(210, "VST Ex Mixer", [] { showDock("vst-ex-fx-dock"); });
 	if (switcher)
@@ -432,6 +442,27 @@ ToolsDialog::ToolsDialog(QWidget *parent) : QDialog(parent)
 		loader_set_ui("pickerHidden", on);
 	});
 
+	// Takes effect at once: the WaveLine dock watches this key. Off by default, so screenshots show no VDJ parts.
+	auto *vdj = new QCheckBox(T("Tools.Vdj"), this);
+	vdj->setToolTip(T("Tools.Vdj.Tip"));
+	vdj->setChecked(meta.uiValue("wavelineVdj").toBool(false));
+	// What the link adds; greyed out until the link is on.
+	auto *vdjParts = new QWidget(this);
+	auto *vdjPartsLayout = new QVBoxLayout(vdjParts);
+	vdjPartsLayout->setContentsMargins(20, 0, 0, 0);
+	for (auto [key, text] : {std::pair{"wavelineVdjTag", "Tools.Vdj.Tag"}, {"keyWheel", "Tools.Vdj.KeyWheel"}}) {
+		auto *box = new QCheckBox(T(text), vdjParts);
+		box->setToolTip(T((QString(text) + ".Tip").toUtf8().constData()));
+		box->setChecked(meta.uiValue(key).toBool(false));
+		connect(box, &QCheckBox::toggled, this, [key](bool on) { PluginMeta::instance().setUiValue(key, on); });
+		vdjPartsLayout->addWidget(box);
+	}
+	vdjParts->setEnabled(vdj->isChecked());
+	connect(vdj, &QCheckBox::toggled, this, [vdjParts](bool on) {
+		PluginMeta::instance().setUiValue("wavelineVdj", on);
+		vdjParts->setEnabled(on);
+	});
+
 	auto *features = new QGroupBox(T("Tools.Features"), this);
 	auto *featureLayout = new QVBoxLayout(features);
 	for (auto [key, text] : {std::pair{"featureChainView", "Tools.Feature.ChainView"},
@@ -454,6 +485,8 @@ ToolsDialog::ToolsDialog(QWidget *parent) : QDialog(parent)
 	form->addRow(T("Tools.Language"), language);
 	form->addRow(QString(), languageNote);
 	form->addRow(hiddenBoth);
+	form->addRow(vdj);
+	form->addRow(vdjParts);
 	form->addRow(T("Tools.Version"), selectable(QString::fromUtf8(PLUGIN_VERSION)));
 	// The DLL's own date: /Brepro (reproducible builds) turns __DATE__ and __TIME__ into "1".
 	QDateTime built = QFileInfo(QString::fromUtf8(obs_get_module_binary_path(obs_current_module()))).lastModified();

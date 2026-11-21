@@ -19,7 +19,7 @@ VST 필터는 VST Enigmax Loader 소속이므로, 이것을 제거하면 OBS가 
 2. OBS를 종료하고 실행합니다. "전체 설치"는 모두, "사용자 지정 설치"는 다음 중에서 고를 수 있습니다:
    - VST Ex Audio Filter (필수): "필터 (VST Ex)", 피치 / 의사 스테레오 필터, 도구 > #cbOBScripts > VST Ex Audio Filter
    - VST Enigmax Loader: VST2 / VST3 플러그인
-   - VST Ex Chain View, VST Ex Mixer 도크, VST Ex Switcher 도크
+   - VST Ex Chain View, VST Ex Mixer 도크, VST Ex Switcher 도크, VST Ex WaveLine 도크
 
    VST Ex의 선택 항목은 나중에 도구 > #cbOBScripts > VST Ex Audio Filter에서 켜고 끌 수 있습니다 (OBS 재시작 후 적용).
 3. OBS를 시작합니다. 처음 시작할 때 썸네일, 스크린샷, 기록을 저장할 곳을 묻습니다.
@@ -99,9 +99,31 @@ VST 필터는 VST Enigmax Loader 소속이므로, 이것을 제거하면 OBS가 
 
 ## VST Ex WaveLine
 
-- 선택한 소스의 파형을 겹쳐서 흘려 보여 줍니다
-- 왼쪽 막대: 확대/축소 (2~60초 표시). 오른쪽 Tr 버튼: 켜진 트랙에서 방송에 나가는 소스는 진하게, 나머지는 옅게 표시합니다. 버튼은 표시만 바꾸고 라우팅은 바꾸지 않습니다
-- `●`: 설정한 BPM (기본 120)으로 박자 점을 표시합니다. 박자에 맞춰 누르면 맞춰집니다. `≡`: 소스별 레이어 순서와 불투명도
+- 선택한 소스의 파형을 겹쳐서 흘려 보여 줍니다. `≡`에서 일반 파형과 스테레오 (L 위, R 아래)를 바꿀 수 있습니다
+- 왼쪽부터 Tr 버튼, 확대/축소 막대 (2~60초 표시), 파형. 켜진 트랙에서 방송에 나가는 소스는 진하게, 나머지는 옅게 표시합니다 (표시만 바뀌고 라우팅은 바뀌지 않습니다)
+- 파형의 왼쪽이나 오른쪽 끝을 드래그하면 좌우 대칭으로 폭을 줄이거나 늘릴 수 있습니다
+- 오른쪽은 박자 표시입니다. 16박마다 한 바퀴 도는 숫자 원과 8박마다 한 바퀴 도는 4x2 막대. 위 줄은 설정한 BPM (기본 120)으로 움직입니다. `●`로 켜기 / 끄기, `↺` (또는 단축키 "VST Ex WaveLine: 박자 초기화")로 지금을 첫 박으로 합니다
+- `≡`: 소스별 레이어 순서와 불투명도, 파형 표시
+
+### VirtualDJ 연동
+
+도구 > #cbOBScripts > VST Ex Audio Filter에서 "VST Ex WaveLine에서 VirtualDJ와 연동"을 켜면 사용할 수 있습니다 (꺼져 있는 동안에는 아무것도 표시되지 않고 연결도 기다리지 않습니다). VirtualDJ와는 OS2L로 연결되며, 이 PC 안(127.0.0.1)에서만 연결을 기다립니다.
+
+- 아래 박자 줄: VirtualDJ의 박자와 BPM으로 움직입니다
+- "VirtualDJ 4덱의 태그 표시"를 켜면 소스 이름 아래에 각 덱 곡의 태그 (기본값은 코멘트)를 나란히 표시하고, 마스터 덱에 ▶를 붙입니다. 줄을 클릭하면 고른 태그가 차례로 바뀝니다
+- 준비: WaveLine의 VDJ 버튼 > VirtualDJ 준비. VirtualDJ 설정, 사용하는 덱 수와 표시할 태그, VirtualDJ 사용자 지정 버튼에 붙여 넣을 스크립트 (덱마다 하나)를 위에서부터 차례로 안내합니다. VirtualDJ를 시작할 때마다 각 버튼을 한 번 누릅니다 (한 번 더 누르면 멈춥니다)
+- VirtualDJ는 1초에 10개 정도만 보내므로 덱과 태그가 많을수록 표시 갱신이 느려집니다 (몇 초마다). 받은 표시는 사라지지 않고 남습니다
+
+![VirtualDJ와 연동한 VST Ex WaveLine (4덱의 BPM, 마스터에 ▶)](docs/images/preview-waveline.png)
+*VirtualDJ와 연동한 VST Ex WaveLine (4덱의 BPM, 마스터에 ▶)*
+
+## VST Ex Key Wheel
+
+- "VST Ex Key Wheel 도크 표시"(VirtualDJ 연동을 켜면 선택 가능)로 나타나는 도크입니다. VirtualDJ 마스터 덱의 조를 5도권 (캐멀롯)으로 표시하고, 지금의 조가 맨 위에 오도록 돕니다. 이어 붙이기 쉬운 조 (양옆과 나란한조)도 밝게 표시합니다
+- 조는 VirtualDJ 준비에서 만드는 버튼 1의 스크립트에서 옵니다
+
+![VST Ex Key Wheel](docs/images/preview-keywheel.png)
+*VST Ex Key Wheel*
 
 ## 빌드
 

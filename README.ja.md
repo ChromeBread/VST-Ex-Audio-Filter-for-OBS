@@ -19,7 +19,7 @@ VST フィルタは VST Enigmax Loader のものなので、これを削除す�
 2. OBS を終了して実行。「フル インストール」はすべて、「カスタム インストール」は次から選べます:
    - VST Ex Audio Filter (必須): 「フィルタ (VST Ex)」、ピッチ / 疑似ステレオ フィルタ、ツール > #cbOBScripts > VST Ex Audio Filter
    - VST Enigmax Loader: VST2 / VST3 プラグイン
-   - VST Ex Chain View、VST Ex Mixer ドック、VST Ex Switcher ドック
+   - VST Ex Chain View、VST Ex Mixer ドック、VST Ex Switcher ドック、VST Ex WaveLine ドック
 
    VST Ex の任意の部分は、あとから ツール > #cbOBScripts > VST Ex Audio Filter でオン / オフできます (OBS 再起動後に反映)。
 3. OBS を起動。初回にサムネイル・スクリーンショット・履歴の保存先を聞かれます。
@@ -99,9 +99,31 @@ VST フィルタは VST Enigmax Loader のものなので、これを削除す�
 
 ## VST Ex WaveLine
 
-- 選んだソースの波形を重ねて流します
-- 左のバーで拡大縮小 (2〜60 秒を表示)。右の Tr ボタンで選んだトラックのうち、配信に載るソースは濃く、それ以外は薄く表示します。ボタンは表示だけを変え、ルーティングは変えません
-- `●`: 設定した BPM (初期値 120) で拍のドットを表示します。拍に合わせて押すと揃います。`≡`: ソースごとの重ね順と透過度
+- 選んだソースの波形を重ねて流します。`≡` から、通常の波形とステレオ (L が上、R が下) を切り替えられます
+- 左から Tr ボタン、拡大縮小のバー (2〜60 秒を表示)、波形。Tr ボタンで選んだトラックのうち、配信に載るソースは濃く、それ以外は薄く表示します (表示だけで、ルーティングは変えません)
+- 波形の左右の端をドラッグすると、左右対称に幅を伸び縮みできます
+- 右側は拍の表示です。16 拍で一周する数字の円と、8 拍で一周する 4×2 の横棒。上の段は設定した BPM (初期値 120) で動きます。`●` でオン / オフ、`↺` (またはホットキー「VST Ex WaveLine: 拍をリセット」) で今を 1 拍目にします
+- `≡`: ソースごとの重ね順と透過度、波形の表示
+
+### VirtualDJ との連携
+
+ツール > #cbOBScripts > VST Ex Audio Filter で「VST Ex WaveLine で VirtualDJ と連携する」をオンにすると使えます (オフの間は何も表示されず、接続も待ち受けません)。VirtualDJ とは OS2L でつながり、この PC の中 (127.0.0.1) だけで接続を待ちます。
+
+- 拍の下の段: VirtualDJ の拍と BPM で動きます
+- 「VirtualDJ の 4 デッキのタグを表示する」をオンにすると、ソース名の下に各デッキの曲のタグ (既定はコメント) を並べ、マスターのデッキに ▶ を付けます。行をクリックすると、選んだタグが順に切り替わります
+- 準備: WaveLine の VDJ ボタン > VirtualDJ の準備。VirtualDJ の設定、使うデッキの数と表示するタグ、VirtualDJ のカスタムボタンに貼るスクリプト (デッキごとに 1 つ) を、上から順に案内します。VirtualDJ を起動するたびに各ボタンを 1 回押します (もう 1 回押すと止まります)
+- VirtualDJ は 1 秒に 10 個ほどしか送らないため、デッキやタグが多いほど表示の更新は遅くなります (数秒ごと)。届いた表示は消えずに残ります
+
+![VirtualDJ と連携した VST Ex WaveLine (4 デッキの BPM、マスターに ▶)](docs/images/preview-waveline.png)
+*VirtualDJ と連携した VST Ex WaveLine (4 デッキの BPM、マスターに ▶)*
+
+## VST Ex Key Wheel
+
+- 「VST Ex Key Wheel ドックを表示する」(VirtualDJ との連携をオンにすると選べます) で出るドックです。VirtualDJ のマスターのデッキの調を五度圏表 (キャメロット) で表示し、今の調が一番上に来るように回ります。つなぎやすい調 (両隣と平行調) も明るく表示します
+- 調は、VirtualDJ の準備で作るボタン 1 のスクリプトから届きます
+
+![VST Ex Key Wheel](docs/images/preview-keywheel.png)
+*VST Ex Key Wheel*
 
 ## ビルド
 

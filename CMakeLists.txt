@@ -48,12 +48,16 @@ add_executable(beat-align-test EXCLUDE_FROM_ALL src/dsp/beat-align-test.cpp)
 target_include_directories(beat-align-test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 add_executable(peak-ring-test EXCLUDE_FROM_ALL src/dsp/peak-ring-test.cpp)
 target_include_directories(peak-ring-test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+add_executable(os2l-test EXCLUDE_FROM_ALL src/dsp/os2l-test.cpp)
+target_include_directories(os2l-test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+add_executable(key-wheel-test EXCLUDE_FROM_ALL src/dsp/key-wheel-test.cpp)
+target_include_directories(key-wheel-test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 add_executable(juce-format-test EXCLUDE_FROM_ALL src/loader/juce-format-test.cpp)
 target_include_directories(juce-format-test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 find_package(libobs REQUIRED)
 find_package(obs-frontend-api REQUIRED)
-find_package(Qt6 COMPONENTS Widgets Core REQUIRED)
+find_package(Qt6 COMPONENTS Widgets Core Network REQUIRED)
 
 # VST Enigmax Loader: VST2/VST3 hosting as its own OBS module, so VST Ex can be left out (or removed)
 # without the VST filters, and the loader works on its own in OBS's standard Filters window.
@@ -97,7 +101,7 @@ install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/data-loader/" DESTINATION "vst-en
 add_library(${CMAKE_PROJECT_NAME} MODULE)
 target_link_libraries(
   ${CMAKE_PROJECT_NAME}
-  PRIVATE OBS::libobs OBS::obs-frontend-api Qt6::Core Qt6::Widgets vstex-host winmm
+  PRIVATE OBS::libobs OBS::obs-frontend-api Qt6::Core Qt6::Widgets Qt6::Network vstex-host winmm
 )
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES AUTOMOC ON AUTOUIC ON AUTORCC ON)
 
@@ -150,6 +154,10 @@ target_sources(
     src/ui/tools-dialog.h
     src/ui/waveline-dock.cpp
     src/ui/waveline-dock.h
+    src/ui/key-wheel-dock.cpp
+    src/ui/key-wheel-dock.h
+    src/vdj-link.cpp
+    src/vdj-link.h
     src/ui/ui-text.h
 )
 

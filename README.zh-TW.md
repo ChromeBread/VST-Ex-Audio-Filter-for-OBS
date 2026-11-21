@@ -19,7 +19,7 @@ VST 濾鏡屬於 VST Enigmax Loader，移除它後 OBS 就無法載入這些濾�
 2. 關閉 OBS 後執行。「完整安裝」安裝全部；「自訂安裝」可選擇:
    - VST Ex Audio Filter (必要):「濾鏡 (VST Ex)」、音高 / 偽立體聲濾鏡、工具 > #cbOBScripts > VST Ex Audio Filter
    - VST Enigmax Loader: VST2 / VST3 外掛
-   - VST Ex Chain View、VST Ex Mixer 停駐視窗、VST Ex Switcher 停駐視窗
+   - VST Ex Chain View、VST Ex Mixer 停駐視窗、VST Ex Switcher 停駐視窗、VST Ex WaveLine 停駐視窗
 
    VST Ex 的選用部分之後可在 工具 > #cbOBScripts > VST Ex Audio Filter 開關 (重新啟動 OBS 後生效)。
 3. 啟動 OBS。第一次啟動時會詢問縮圖、截圖與歷程的儲存位置。
@@ -96,9 +96,31 @@ VST 濾鏡屬於 VST Enigmax Loader，移除它後 OBS 就無法載入這些濾�
 
 ## VST Ex WaveLine
 
-- 將選定來源的波形重疊流動顯示
-- 左側長條: 縮放 (顯示 2 到 60 秒)。右側 Tr 按鈕: 亮起音軌上會送往直播的來源顯示較深，其他較淡。按鈕只改變顯示，不改變路由
-- `●`: 依設定的 BPM (預設 120) 顯示節拍點，按拍按下即可對齊。`≡`: 各來源的圖層順序與不透明度
+- 將選定來源的波形重疊流動顯示；可從 `≡` 切換一般波形與立體聲 (L 在上、R 在下)
+- 由左至右：Tr 按鈕、縮放長條 (顯示 2 到 60 秒)、波形。亮起音軌上會送往直播的來源顯示較深，其他較淡 (僅顯示，不改變路由)
+- 拖曳波形的左右邊緣可縮窄或加寬，左右會一起移動
+- 右側是節拍顯示：每 16 拍轉一圈的數字圓圈，以及每 8 拍轉一圈的 4x2 橫條。上列依設定的 BPM (預設 120) 走動。`●` 開 / 關，`↺` (或快捷鍵「VST Ex WaveLine: 重設節拍」) 將現在設為第 1 拍
+- `≡`: 各來源的圖層順序與不透明度，以及波形樣式
+
+### VirtualDJ 連動
+
+在 工具 > #cbOBScripts > VST Ex Audio Filter 開啟「在 VST Ex WaveLine 中與 VirtualDJ 連動」即可使用 (關閉期間不顯示任何內容，也不等待連線)。VirtualDJ 透過 OS2L 連線，外掛只在本機 (127.0.0.1) 等待連線。
+
+- 下方節拍列：依 VirtualDJ 的節拍與 BPM 走動
+- 開啟「顯示 VirtualDJ 4 個唱盤的標籤」後，會在來源名稱下方並排顯示各唱盤曲目的標籤 (預設為註解)，主唱盤加上 ▶。點擊該列可依序切換選擇的標籤
+- 準備：WaveLine 的 VDJ 按鈕 > 準備 VirtualDJ。會依序引導 VirtualDJ 的設定、使用的唱盤數量與要顯示的標籤，以及要貼到 VirtualDJ 自訂按鈕的腳本 (每個唱盤一個)。每次啟動 VirtualDJ 時各按一次按鈕 (再按一次即停止)
+- VirtualDJ 每秒只傳送約 10 個值，唱盤與標籤越多，顯示更新越慢 (每數秒一次)。收到的內容會一直顯示
+
+![與 VirtualDJ 連動的 VST Ex WaveLine (4 個唱盤的 BPM，主唱盤加上 ▶)](docs/images/preview-waveline.png)
+*與 VirtualDJ 連動的 VST Ex WaveLine (4 個唱盤的 BPM，主唱盤加上 ▶)*
+
+## VST Ex Key Wheel
+
+- 以「顯示 VST Ex Key Wheel 停駐窗」(開啟 VirtualDJ 連動後可選) 顯示的停駐窗：以五度圈 (Camelot) 顯示 VirtualDJ 主唱盤的調性，並旋轉讓播放中的調性位於最上方。適合銜接的調性 (相鄰與關係調) 也會亮起
+- 調性來自 準備 VirtualDJ 所產生的按鈕 1 腳本
+
+![VST Ex Key Wheel](docs/images/preview-keywheel.png)
+*VST Ex Key Wheel*
 
 ## 建置
 

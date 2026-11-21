@@ -24,6 +24,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>
 #include "ui/menu-hook.h"
 #include "master-bus.h"
 #include "ui/fx-dock.h"
+#include "ui/key-wheel-dock.h"
 #include "ui/master-dock.h"
 #include "ui/switch-dock.h"
 #include "ui/tools-dialog.h"
@@ -74,12 +75,19 @@ bool obs_module_load(void)
 		install_master_dock();
 	if (PluginMeta::instance().uiValue("featureWaveline").toBool(true))
 		install_waveline_dock();
+	// The Key Wheel follows its Tools switches at once, not at the next load.
+	apply_key_wheel_dock();
+	QObject::connect(&PluginMeta::instance(), &PluginMeta::uiChanged, [](const QString &key) {
+		if (key == QLatin1String("wavelineVdj") || key == QLatin1String("keyWheel"))
+			apply_key_wheel_dock();
+	});
 	obs_log(LOG_INFO, "plugin loaded successfully (version %s)", PLUGIN_VERSION);
 	return true;
 }
 
 void obs_module_unload(void)
 {
+	remove_key_wheel_dock();
 	remove_waveline_dock();
 	remove_master_dock();
 	remove_fx_dock();

@@ -19,7 +19,7 @@ bawaan OBS dengan *Serah terima* (lihat di bawah).
 2. Tutup OBS lalu jalankan. *Instalasi penuh* memasang semuanya; *Instalasi kustom* bisa memilih:
    - VST Ex Audio Filter (wajib): *Filter (VST Ex)*, filter pitch / pseudo stereo, Alat > #cbOBScripts > VST Ex Audio Filter
    - VST Enigmax Loader: plugin VST2 / VST3
-   - VST Ex Chain View, dock VST Ex Mixer, dock VST Ex Switcher
+   - VST Ex Chain View, dock VST Ex Mixer, dock VST Ex Switcher, dock VST Ex WaveLine
 
    Bagian opsional VST Ex bisa dinyalakan / dimatikan nanti di Alat > #cbOBScripts > VST Ex Audio Filter (berlaku setelah OBS dimulai ulang).
 3. Jalankan OBS. Saat pertama kali, OBS menanyakan tempat menyimpan thumbnail, tangkapan layar, dan riwayat.
@@ -99,9 +99,31 @@ Untuk menghapus sekaligus mencadangkan, jalankan `OBS-VST-Ex-Audio-Filter\Safe_U
 
 ## VST Ex WaveLine
 
-- Bentuk gelombang sumber pilihan mengalir bertumpuk
-- Bilah kiri: zoom (2 sampai 60 detik). Tombol Tr di kanan: sumber pada trek yang menyala dan masuk ke stream tampak pekat, yang lain pudar. Tombol hanya mengubah tampilan, bukan perutean
-- `●`: titik ketukan sesuai BPM pilihan (bawaan 120); tekan tepat pada ketukan untuk menyelaraskan. `≡`: urutan lapisan dan opasitas tiap sumber
+- Bentuk gelombang sumber pilihan mengalir bertumpuk; `≡` beralih antara bentuk gelombang normal dan stereo (L atas, R bawah)
+- Dari kiri: tombol Tr, bilah zoom (2 sampai 60 detik), bentuk gelombang. Sumber pada trek yang menyala dan masuk ke stream tampak pekat, yang lain pudar (hanya tampilan, perutean tidak berubah)
+- Seret tepi kiri atau kanan bentuk gelombang untuk mempersempit atau memperlebarnya; kedua sisi bergerak bersama
+- Di kanan, ketukan: angka dalam lingkaran yang berputar sekali tiap 16 ketukan, dan bilah 4x2 yang berputar sekali tiap 8 ketukan. Baris atas berjalan pada BPM pilihan (bawaan 120). `●` menyalakan / mematikan, `↺` (atau hotkey "VST Ex WaveLine: reset ketukan") menjadikan saat ini ketukan 1
+- `≡`: urutan lapisan dan opasitas tiap sumber, dan gaya bentuk gelombang
+
+### Tautan VirtualDJ
+
+Nyalakan "Tautan VirtualDJ di VST Ex WaveLine" di Alat > #cbOBScripts > VST Ex Audio Filter (selama mati, tidak ada yang ditampilkan dan tidak ada yang menunggu koneksi). VirtualDJ terhubung lewat OS2L; plugin menunggunya hanya di PC ini (127.0.0.1).
+
+- Baris ketukan bawah: berjalan pada ketukan dan BPM VirtualDJ
+- Dengan "Tampilkan tag VirtualDJ dari 4 deck" menyala, tag lagu tiap deck (bawaan: Komentar) ditampilkan di bawah nama sumber, deck master diberi tanda ▶. Klik barisnya untuk melihat tag pilihan bergiliran
+- Penyiapan: tombol VDJ di WaveLine > Siapkan VirtualDJ. Memandu berurutan: pengaturan VirtualDJ, jumlah deck dan tag yang ditampilkan, dan skrip untuk ditempel ke tombol kustom VirtualDJ (satu per deck). Tekan tiap tombol sekali setiap kali VirtualDJ dimulai (tekan lagi untuk berhenti)
+- VirtualDJ hanya mengirim sekitar 10 nilai per detik, jadi makin banyak deck dan tag, makin lambat tampilan diperbarui (tiap beberapa detik). Yang sudah diterima tetap ditampilkan
+
+![VST Ex WaveLine dengan tautan VirtualDJ (BPM 4 deck, deck master bertanda ▶)](docs/images/preview-waveline.png)
+*VST Ex WaveLine dengan tautan VirtualDJ (BPM 4 deck, deck master bertanda ▶)*
+
+## VST Ex Key Wheel
+
+- Dock yang muncul dengan "Tampilkan dock VST Ex Key Wheel" (bisa dipilih setelah tautan VirtualDJ menyala): kunci deck master VirtualDJ pada lingkaran kelima (Camelot), berputar agar kunci yang diputar berada di atas. Kunci yang cocok untuk mixing (tetangga dan kunci relatif) juga diterangkan
+- Kuncinya berasal dari skrip tombol 1 yang dibuat di Siapkan VirtualDJ
+
+![VST Ex Key Wheel](docs/images/preview-keywheel.png)
+*VST Ex Key Wheel*
 
 ## Build
 
