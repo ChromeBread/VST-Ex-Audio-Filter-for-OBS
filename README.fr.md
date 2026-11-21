@@ -59,7 +59,14 @@ Pour désinstaller avec une sauvegarde, lancez `OBS-VST-Ex-Audio-Filter\Safe_Uni
 - *VST Ex Transposition / Pan* : hauteur en demi-tons et panoramique, pratique pour distinguer les appareils
 - *VST Ex Pseudo-stéréo* : élargit un micro mono sans DAW (effet Haas), un seul filtre à ajouter ou retirer
 
+<p><img src="docs/images/preview-pitch.png" alt="VST Ex Transposition / Pan" width="49%"> <img src="docs/images/preview-stereo.png" alt="VST Ex Pseudo-stéréo" width="49%"></p>
+
+*VST Ex Transposition / Pan / VST Ex Pseudo-stéréo*
+
 - Outils > #cbOBScripts > VST Ex Audio Filter : langue (EN / JP / KR / ID / FR / TW), version, parties facultatives, **Mode débogage**
+
+![Outils > #cbOBScripts](docs/images/preview-menu.png)
+*Outils > #cbOBScripts*
 
 ## VST Enigmax Loader
 
@@ -96,6 +103,9 @@ Pour désinstaller avec une sauvegarde, lancez `OBS-VST-Ex-Audio-Filter\Safe_Uni
 ## VST Ex Switcher
 
 - Dock *VST Ex Switcher* : boutons des ensembles ON/OFF et utilisation CPU (OBS total et part VST)
+
+![VST Ex Switcher](docs/images/preview-switcher.png)
+*VST Ex Switcher*
 
 ## VST Ex WaveLine
 

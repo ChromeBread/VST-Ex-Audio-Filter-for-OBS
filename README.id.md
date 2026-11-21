@@ -59,7 +59,14 @@ Untuk menghapus sekaligus mencadangkan, jalankan `OBS-VST-Ex-Audio-Filter\Safe_U
 - *VST Ex Pitch / Pan*: pitch per semitone dan pan, memudahkan membedakan perangkat saat menyelaraskan
 - *VST Ex Pseudo Stereo*: melebarkan mik mono tanpa DAW (efek Haas), satu filter untuk ditambah atau dihapus
 
+<p><img src="docs/images/preview-pitch.png" alt="VST Ex Pitch / Pan" width="49%"> <img src="docs/images/preview-stereo.png" alt="VST Ex Pseudo Stereo" width="49%"></p>
+
+*VST Ex Pitch / Pan / VST Ex Pseudo Stereo*
+
 - Alat > #cbOBScripts > VST Ex Audio Filter: bahasa (EN / JP / KR / ID / FR / TW), versi, bagian opsional, **Mode debug**
+
+![Alat > #cbOBScripts](docs/images/preview-menu.png)
+*Alat > #cbOBScripts*
 
 ## VST Enigmax Loader
 
@@ -96,6 +103,9 @@ Untuk menghapus sekaligus mencadangkan, jalankan `OBS-VST-Ex-Audio-Filter\Safe_U
 ## VST Ex Switcher
 
 - Dock *VST Ex Switcher*: tombol set ON/OFF dan penggunaan CPU (total OBS dan bagian VST)
+
+![VST Ex Switcher](docs/images/preview-switcher.png)
+*VST Ex Switcher*
 
 ## VST Ex WaveLine
 

@@ -56,7 +56,14 @@ VST 濾鏡屬於 VST Enigmax Loader，移除它後 OBS 就無法載入這些濾�
 -「VST Ex 移調 / 聲像」: 以半音為單位的音高與聲像，對齊裝置時容易分辨
 -「VST Ex 假立體聲」: 不用 DAW 就能讓單聲道麥克風變寬 (哈斯效應)，一個濾鏡即可新增或移除
 
+<p><img src="docs/images/preview-pitch.png" alt="VST Ex 移調 / 聲像" width="49%"> <img src="docs/images/preview-stereo.png" alt="VST Ex 假立體聲" width="49%"></p>
+
+*VST Ex 移調 / 聲像 / VST Ex 假立體聲*
+
 - 工具 > #cbOBScripts > VST Ex Audio Filter: 語言 (EN / JP / KR / ID / FR / TW)、版本、選用部分開關、**偵錯模式**
+
+![工具 > #cbOBScripts](docs/images/preview-menu.png)
+*工具 > #cbOBScripts*
 
 ## VST Enigmax Loader
 
@@ -97,6 +104,9 @@ VST 濾鏡屬於 VST Enigmax Loader，移除它後 OBS 就無法載入這些濾�
 ## VST Ex WaveLine
 
 - 將選定來源的波形重疊流動顯示；可從 `≡` 切換一般波形與立體聲 (L 在上、R 在下)
+
+![VST Ex Switcher](docs/images/preview-switcher.png)
+*VST Ex Switcher*
 - 由左至右：Tr 按鈕、縮放長條 (顯示 2 到 60 秒)、波形。亮起音軌上會送往直播的來源顯示較深，其他較淡 (僅顯示，不改變路由)
 - 拖曳波形的左右邊緣可縮窄或加寬，左右會一起移動
 - 右側是節拍顯示：每 16 拍轉一圈的數字圓圈，以及每 8 拍轉一圈的 4x2 橫條。上列依設定的 BPM (預設 120) 走動。`●` 開 / 關，`↺` (或快捷鍵「VST Ex WaveLine: 重設節拍」) 將現在設為第 1 拍

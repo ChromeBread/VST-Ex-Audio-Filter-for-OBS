@@ -59,7 +59,14 @@ VST 필터는 VST Enigmax Loader 소속이므로, 이것을 제거하면 OBS가 
 - "VST Ex 피치 / 팬": 반음 단위 피치와 팬. 장치 간 타이밍을 맞출 때 구별하기 쉬워집니다
 - "VST Ex 의사 스테레오": DAW 없이 모노 마이크를 넓게 만듭니다 (하스 효과). 필터 하나로 추가 / 삭제
 
+<p><img src="docs/images/preview-pitch.png" alt="VST Ex 피치 / 팬" width="49%"> <img src="docs/images/preview-stereo.png" alt="VST Ex 의사 스테레오" width="49%"></p>
+
+*VST Ex 피치 / 팬 / VST Ex 의사 스테레오*
+
 - 도구 > #cbOBScripts > VST Ex Audio Filter: 언어 (EN / JP / KR / ID / FR / TW), 버전, 선택 항목 켜기 / 끄기, **디버그 모드**
+
+![도구 > #cbOBScripts](docs/images/preview-menu.png)
+*도구 > #cbOBScripts*
 
 ## VST Enigmax Loader
 
@@ -96,6 +103,9 @@ VST 필터는 VST Enigmax Loader 소속이므로, 이것을 제거하면 OBS가 
 ## VST Ex Switcher
 
 - "VST Ex Switcher" 도크: ON/OFF 세트 버튼과 CPU 사용률 (OBS 전체와 VST 몫)
+
+![VST Ex Switcher](docs/images/preview-switcher.png)
+*VST Ex Switcher*
 
 ## VST Ex WaveLine
 

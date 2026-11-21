@@ -59,7 +59,14 @@ VST フィルタは VST Enigmax Loader のものなので、これを削除す�
 - 「VST Ex ピッチ / パン」: 半音単位のピッチとパン。デバイス間のズレ合わせで聞き分けやすくなります
 - 「VST Ex 疑似ステレオ」: DAW なしでモノラルマイクに広がりを作ります (ハース効果)。1 つのフィルタで追加・削除
 
+<p><img src="docs/images/preview-pitch.png" alt="VST Ex ピッチ / パン" width="49%"> <img src="docs/images/preview-stereo.png" alt="VST Ex 疑似ステレオ" width="49%"></p>
+
+*VST Ex ピッチ / パン / VST Ex 疑似ステレオ*
+
 - ツール > #cbOBScripts > VST Ex Audio Filter: 言語 (EN / JP / KR / ID / FR / TW)、バージョン、任意の部分のオン / オフ、**デバッグモード**
+
+![ツール > #cbOBScripts](docs/images/preview-menu.png)
+*ツール > #cbOBScripts*
 
 ## VST Enigmax Loader
 
@@ -96,6 +103,9 @@ VST フィルタは VST Enigmax Loader のものなので、これを削除す�
 ## VST Ex Switcher
 
 - 「VST Ex Switcher」ドック: ON/OFF セットのボタンと CPU 使用率 (OBS 全体と VST の分)
+
+![VST Ex Switcher](docs/images/preview-switcher.png)
+*VST Ex Switcher*
 
 ## VST Ex WaveLine
 

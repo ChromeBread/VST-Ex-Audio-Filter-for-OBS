@@ -59,7 +59,14 @@ To uninstall with a backup, run `OBS-VST-Ex-Audio-Filter\Safe_Uninstaller\Safe_U
 - *VST Ex Pitch / Pan*: pitch in semitones and pan, handy to tell devices apart when aligning them
 - *VST Ex Pseudo Stereo*: widens a mono mic without a DAW (Haas effect), one filter to add or remove
 
+<p><img src="docs/images/preview-pitch.png" alt="VST Ex Pitch / Pan" width="49%"> <img src="docs/images/preview-stereo.png" alt="VST Ex Pseudo Stereo" width="49%"></p>
+
+*VST Ex Pitch / Pan / VST Ex Pseudo Stereo*
+
 - Tools > #cbOBScripts > VST Ex Audio Filter: language (EN / JP / KR / ID / FR / TW), version, optional parts, **Debug mode**
+
+![Tools > #cbOBScripts](docs/images/preview-menu.png)
+*Tools > #cbOBScripts*
 
 ## VST Enigmax Loader
 
@@ -96,6 +103,9 @@ To uninstall with a backup, run `OBS-VST-Ex-Audio-Filter\Safe_Uninstaller\Safe_U
 ## VST Ex Switcher
 
 - *VST Ex Switcher* dock: ON/OFF set buttons and CPU usage (OBS total and VST share)
+
+![VST Ex Switcher](docs/images/preview-switcher.png)
+*VST Ex Switcher*
 
 ## VST Ex WaveLine
 
